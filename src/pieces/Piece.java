@@ -10,8 +10,8 @@ import main.Board;
 
 public class Piece {
 
-    int col, row, xPos, yPos;
-    boolean isWhite;
+    public int col, row, xPos, yPos;
+    public boolean isWhite;
     String name;
     Image sprite;
     Board board;
