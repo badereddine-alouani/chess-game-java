@@ -8,13 +8,14 @@ import javax.imageio.ImageIO;
 
 import main.Board;
 
-public class Piece {
+public abstract class Piece {
 
     public int col, row, xPos, yPos;
     public boolean isWhite;
     String name;
     Image sprite;
     Board board;
+    public boolean isFirstMove = true;
 
     private static BufferedImage sheet;
 
@@ -28,7 +29,8 @@ public class Piece {
 
     int sheetScale = sheet.getWidth() / 6;
 
-    public Piece(Board board, int col, int row, boolean isWhite, String name) {
+    protected Piece(Board board, int col, int row, boolean isWhite, String name) {
+        this.board = board;
         this.col = col;
         this.row = row;
         this.xPos = col * board.tileSize;
@@ -67,6 +69,28 @@ public class Piece {
             default:
                 return 0;
         }
+    }
+
+    public abstract boolean isValidPieceMove(int row, int col);
+
+    public boolean isCollision(int row, int col) {
+
+        int rowStep = Integer.compare(row, this.row);
+        int colStep = Integer.compare(col, this.col);
+
+        int r = this.row + rowStep;
+        int c = this.col + colStep;
+
+        while (r != row || c != col) {
+            if (board.getPiece(c, r) != null) {
+                return true;
+            }
+
+            r += rowStep;
+            c += colStep;
+        }
+
+        return false;
     }
 
     public void paint(Graphics2D g2d) {
