@@ -19,7 +19,7 @@ public class Board extends JPanel {
     private int cols = 8;
     private int rows = 8;
 
-    ArrayList<Piece> pieces = new ArrayList<>();
+    public ArrayList<Piece> pieces = new ArrayList<>();
 
     public Piece selectedPiece;
     Input input = new Input(this);
@@ -48,6 +48,7 @@ public class Board extends JPanel {
         move.piece.row = move.newRow;
         move.piece.xPos = move.newCol * tileSize;
         move.piece.yPos = move.newRow * tileSize;
+        move.piece.isFirstMove = false;
         capture(move);
 
     }
@@ -66,6 +67,13 @@ public class Board extends JPanel {
 
     public boolean isvalidMove(Move move) {
         if (sameTeam(move.piece, move.capture)) {
+            return false;
+        }
+        if (!move.piece.isValidPieceMove(move.newRow, move.newCol)) {
+            return false;
+        }
+
+        if (move.piece.isCollision(move.newRow, move.newCol)) {
             return false;
         }
         return true;
@@ -125,6 +133,19 @@ public class Board extends JPanel {
                 light = !light;
             }
             light = !light;
+        }
+        if (selectedPiece != null) {
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    if (isvalidMove(new Move(this, selectedPiece, c, r))) {
+                        g2d.setColor(new Color(50, 150, 255, 150));
+                        int circleSize = tileSize / 3;
+                        int offset = (tileSize - circleSize) / 2;
+
+                        g2d.fillOval(c * tileSize + offset, r * tileSize + offset, circleSize, circleSize);
+                    }
+                }
+            }
         }
 
         for (Piece piece : pieces) {
