@@ -12,7 +12,7 @@ public abstract class Piece {
 
     public int col, row, xPos, yPos;
     public boolean isWhite;
-    String name;
+    public String name;
     Image sprite;
     Board board;
     public boolean isFirstMove = true;

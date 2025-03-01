@@ -18,6 +18,7 @@ public class Board extends JPanel {
     public int tileSize = 80;
     private int cols = 8;
     private int rows = 8;
+    public int enPassantTile = -1;
 
     public ArrayList<Piece> pieces = new ArrayList<>();
 
@@ -44,13 +45,85 @@ public class Board extends JPanel {
     }
 
     public void makeMove(Move move) {
+        if (move.piece.name.equals("Pawn")) {
+            movePawn(move);
+            capture(move);
+        } else {
+            move.piece.col = move.newCol;
+            move.piece.row = move.newRow;
+            move.piece.xPos = move.newCol * tileSize;
+            move.piece.yPos = move.newRow * tileSize;
+            move.piece.isFirstMove = false;
+            capture(move);
+        }
+
+    }
+
+    private void movePawn(Move move) {
+        int colorIndex = move.piece.isWhite ? 1 : -1;
+
+        // capture en passant
+
+        if (getTile(move.newCol, move.newRow) == enPassantTile) {
+            move.capture = getPiece(move.newCol, move.newRow + colorIndex);
+        }
+
+        // get the last en passant tile
+
+        if (Math.abs(move.newRow - move.piece.row) == 2) {
+            enPassantTile = getTile(move.newCol, move.newRow + colorIndex);
+        } else {
+            enPassantTile = -1;
+        }
         move.piece.col = move.newCol;
         move.piece.row = move.newRow;
         move.piece.xPos = move.newCol * tileSize;
         move.piece.yPos = move.newRow * tileSize;
         move.piece.isFirstMove = false;
-        capture(move);
+        int promotionRow = move.piece.isWhite ? 0 : 7;
+        if (promotionRow == move.newRow) {
+            promotePawn(move);
+        }
+    }
 
+    private void promotePawn(Move move) {
+        String[] options = { "Queen", "Rook", "Bishop", "Knight" };
+        String option = (String) JOptionPane.showInputDialog(
+                null,
+                "Choose a piece for promotion:",
+                "Pawn Promotion",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                "Queen");
+
+        if (option == null) {
+            option = "Queen";
+        }
+
+        Piece promotionPiece = null;
+        switch (option.toLowerCase()) {
+            case "knight":
+                promotionPiece = new Knight(this, move.newCol, move.newRow, move.piece.isWhite);
+                break;
+            case "bishop":
+                promotionPiece = new Bishop(this, move.newCol, move.newRow, move.piece.isWhite);
+                break;
+            case "rook":
+                promotionPiece = new Rook(this, move.newCol, move.newRow, move.piece.isWhite);
+                break;
+            case "queen":
+            default:
+                promotionPiece = new Queen(this, move.newCol, move.newRow, move.piece.isWhite);
+                break;
+        }
+
+        pieces.add(promotionPiece);
+        pieces.remove(move.piece);
+    }
+
+    public int getTile(int col, int row) {
+        return row * rows + col;
     }
 
     public void capture(Move move) {
