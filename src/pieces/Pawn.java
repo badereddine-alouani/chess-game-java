@@ -11,7 +11,6 @@ public class Pawn extends Piece {
     @Override
     public boolean isValidPieceMove(int row, int col) {
 
-        System.out.println(isFirstMove);
         int colorIndex = isWhite ? 1 : -1;
 
         if (col == this.col && row == this.row - colorIndex && board.getPiece(col, row) == null) {
@@ -22,11 +21,14 @@ public class Pawn extends Piece {
             return true;
         }
 
-        if (col == this.col + 1 && row == this.row - colorIndex && board.getPiece(col, row) != null) {
+        if (Math.abs(col - this.col) == 1 && row == this.row - colorIndex && board.getPiece(col, row) != null) {
             return true;
         }
 
-        if (col == this.col - 1 && row == this.row - colorIndex && board.getPiece(col, row) != null) {
+        // En Passant
+
+        if (Math.abs(col - this.col) == 1 && row == this.row - colorIndex
+                && board.getTile(col, row) == board.enPassantTile && board.getPiece(col, row + colorIndex) != null) {
             return true;
         }
 
