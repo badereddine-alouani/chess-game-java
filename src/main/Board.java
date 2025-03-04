@@ -311,7 +311,7 @@ public class Board extends JPanel {
         if (isGameOver(king)) {
             String message;
             if (isKingInCheck(king)) {
-                message = (isWhiteTurn ? "White" : "Black") + " Wins!";
+                message = "Checkmate! " + (isWhiteTurn ? "Black" : "White") + " Wins!";
             } else {
                 message = "Stalemate!";
             }
