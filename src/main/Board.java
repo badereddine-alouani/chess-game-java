@@ -130,35 +130,38 @@ public class Board extends JPanel {
     }
 
     private void promotePawn(Move move) {
-        String[] options = { "Queen", "Rook", "Bishop", "Knight" };
-        String option = (String) JOptionPane.showInputDialog(
-                null,
-                "Choose a piece for promotion:",
-                "Pawn Promotion",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                "Queen");
-
-        if (option == null) {
-            option = "Queen";
-        }
-
         Piece promotionPiece = null;
-        switch (option.toLowerCase()) {
-            case "knight":
-                promotionPiece = new Knight(this, move.newCol, move.newRow, move.piece.isWhite);
-                break;
-            case "bishop":
-                promotionPiece = new Bishop(this, move.newCol, move.newRow, move.piece.isWhite);
-                break;
-            case "rook":
-                promotionPiece = new Rook(this, move.newCol, move.newRow, move.piece.isWhite);
-                break;
-            case "queen":
-            default:
-                promotionPiece = new Queen(this, move.newCol, move.newRow, move.piece.isWhite);
-                break;
+        if (!isBot) {
+            String[] options = { "Queen", "Rook", "Bishop", "Knight" };
+            String option = (String) JOptionPane.showInputDialog(
+                    null,
+                    "Choose a piece for promotion:",
+                    "Pawn Promotion",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    "Queen");
+
+            if (option == null) {
+                option = "Queen";
+            }
+            switch (option.toLowerCase()) {
+                case "knight":
+                    promotionPiece = new Knight(this, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+                case "bishop":
+                    promotionPiece = new Bishop(this, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+                case "rook":
+                    promotionPiece = new Rook(this, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+                case "queen":
+                default:
+                    promotionPiece = new Queen(this, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+            }
+        } else if (!isWhiteTurn) {
+            promotionPiece = move.promotionPiece;
         }
 
         pieces.add(promotionPiece);
