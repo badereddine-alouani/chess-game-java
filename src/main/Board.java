@@ -21,19 +21,22 @@ public class Board extends JPanel {
     private int rows = 8;
     public int enPassantTile = -1;
     private boolean isWhiteTurn = true;
-    private boolean isGameOver = false;
+    private Bot bot;
+    private List<String> playedMoves;
+    public Boolean isBot;
 
     public ArrayList<Piece> pieces = new ArrayList<>();
 
     public Piece selectedPiece;
     Input input = new Input(this);
 
-    public Board() {
+    public Board(Bot bot) {
         this.setPreferredSize(new Dimension(cols * tileSize, rows * tileSize));
 
         this.addMouseListener(input);
         this.addMouseMotionListener(input);
-
+        this.bot = bot;
+        this.playedMoves = new ArrayList<>();
         addPieces();
     }
 
@@ -48,6 +51,7 @@ public class Board extends JPanel {
     }
 
     public void makeMove(Move move) {
+
         if (move.piece.name.equals("Pawn")) {
             movePawn(move);
         } else if (move.piece.name.equals("King")) {
@@ -59,7 +63,21 @@ public class Board extends JPanel {
         move.piece.yPos = move.newRow * tileSize;
         move.piece.isFirstMove = false;
         capture(move);
-        isWhiteTurn = !isWhiteTurn;
+        playedMoves.add(move.toString());
+
+        Move bestMove = null;
+
+        if (isBot && isWhiteTurn) {
+            try {
+                bestMove = Move.toMove(this, bot.getBestMoveFromStartpos(playedMoves, 100));
+                isWhiteTurn = !isWhiteTurn;
+                makeMove(bestMove);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            isWhiteTurn = !isWhiteTurn;
+        }
         updateGameState();
 
     }
@@ -267,7 +285,6 @@ public class Board extends JPanel {
 
     public void addPieces() {
 
-        // Black Pieces
         pieces.add(new Rook(this, 0, 0, false));
         pieces.add(new Knight(this, 1, 0, false));
         pieces.add(new Bishop(this, 2, 0, false));
@@ -286,7 +303,6 @@ public class Board extends JPanel {
         pieces.add(new Pawn(this, 6, 1, false));
         pieces.add(new Pawn(this, 7, 1, false));
 
-        // White Pieces
         pieces.add(new Rook(this, 0, 7, true));
         pieces.add(new Knight(this, 1, 7, true));
         pieces.add(new Bishop(this, 2, 7, true));
@@ -324,7 +340,6 @@ public class Board extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // Draws the board
         boolean light = true;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
@@ -349,7 +364,6 @@ public class Board extends JPanel {
             }
         }
 
-        // Draws pieces
         for (Piece piece : pieces) {
             piece.paint(g2d);
         }
