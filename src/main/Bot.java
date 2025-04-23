@@ -13,6 +13,7 @@ public class Bot {
     private BufferedWriter writer;
 
     public boolean startEngine(String pathToEngine) throws IOException {
+        System.out.println("Starting chess engine...");
         engine = Runtime.getRuntime().exec(pathToEngine);
         reader = new BufferedReader(new InputStreamReader(engine.getInputStream()));
         writer = new BufferedWriter(new OutputStreamWriter(engine.getOutputStream()));
@@ -27,24 +28,20 @@ public class Bot {
     }
 
     public void setDifficulty(String level) throws IOException {
+        sendCommand("setoption name UCI_LimitStrength value true");
+
         switch (level.toLowerCase()) {
             case "easy":
-                sendCommand("setoption name Skill Level value 0");
-                sendCommand("setoption name Skill Level Maximum Error value 700");
-                sendCommand("setoption name Skill Level Probability value 50");
+                sendCommand("setoption name UCI_Elo value 1350");
                 break;
             case "medium":
-                sendCommand("setoption name Skill Level value 8");
-                sendCommand("setoption name Skill Level Maximum Error value 100");
-                sendCommand("setoption name Skill Level Probability value 20");
+                sendCommand("setoption name UCI_Elo value 1600");
                 break;
             case "hard":
-                sendCommand("setoption name Skill Level value 15");
-                sendCommand("setoption name Skill Level Maximum Error value 30");
-                sendCommand("setoption name Skill Level Probability value 10");
+                sendCommand("setoption name UCI_Elo value 1900");
                 break;
             case "master":
-                sendCommand("setoption name Skill Level value 20");
+                sendCommand("setoption name UCI_Elo value 2500");
                 break;
         }
     }

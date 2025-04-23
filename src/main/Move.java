@@ -1,6 +1,10 @@
 package main;
 
+import pieces.Bishop;
+import pieces.Knight;
 import pieces.Piece;
+import pieces.Queen;
+import pieces.Rook;
 
 public class Move {
     int oldCol;
@@ -11,6 +15,7 @@ public class Move {
 
     Piece piece;
     Piece capture;
+    Piece promotionPiece;
 
     public Move(Board board, Piece piece, int newCol, int newRow) {
         this.oldCol = piece.col;
@@ -29,7 +34,27 @@ public class Move {
 
         Piece piece = board.getPiece(oldCol, oldRow);
 
-        return new Move(board, piece, newCol, newRow);
+        Move move = new Move(board, piece, newCol, newRow);
+
+        int len = moveStr.length();
+        if (len == 5) {
+            switch (moveStr.charAt(len - 1)) {
+                case 'n':
+                    move.promotionPiece = new Knight(board, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+                case 'b':
+                    move.promotionPiece = new Bishop(board, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+                case 'r':
+                    move.promotionPiece = new Rook(board, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+                case 'q':
+                default:
+                    move.promotionPiece = new Queen(board, move.newCol, move.newRow, move.piece.isWhite);
+                    break;
+            }
+        }
+        return move;
     }
 
     @Override
