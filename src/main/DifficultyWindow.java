@@ -32,7 +32,7 @@ public class DifficultyWindow extends JFrame {
         titleLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        String[] difficultyLevels = { "Easy", "Medium", "Hard", "Master" };
+        String[] difficultyLevels = { "Beginner", "Easy", "Medium", "Hard", "Master" };
         JComboBox<String> difficultySelector = new JComboBox<>(difficultyLevels);
         difficultySelector.setSelectedIndex(1);
         difficultySelector.setMaximumSize(new Dimension(150, 25));
@@ -67,7 +67,7 @@ public class DifficultyWindow extends JFrame {
         startButton.addActionListener((ActionEvent e) -> {
             String selected = (String) difficultySelector.getSelectedItem();
             try {
-                bot.startEngine("stockfish/stockfish-windows-x86-64");
+                bot.startEngine("stockfish/stockfish-ubuntu-x86-64");
                 bot.setDifficulty(selected.toLowerCase());
                 System.out.println("Difficulty set to: " + selected);
                 onDifficultyChosen.accept(selected.toLowerCase());

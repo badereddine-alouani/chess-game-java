@@ -67,7 +67,7 @@ public class Move {
         moveStr.append(8 - newRow);
 
         if (promotionPiece != null) {
-            switch (promotionPiece.getClass().getSimpleName().toLowerCase()) {
+            switch (promotionPiece.name.toLowerCase()) {
                 case "queen":
                     moveStr.append("q");
                     break;

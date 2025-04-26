@@ -24,6 +24,9 @@ public class Board extends JPanel {
     private Bot bot;
     private List<String> playedMoves;
     public Boolean isBot;
+    private static Color DARK_COLOR = new Color(112, 128, 144);
+    private static Color LIGHT_COLOR = new Color(240, 240, 240);
+    private static Color VALID_COLOR = new Color(100, 200, 255, 150);
 
     public ArrayList<Piece> pieces = new ArrayList<>();
 
@@ -132,7 +135,7 @@ public class Board extends JPanel {
 
     private void promotePawn(Move move) {
         Piece promotionPiece = null;
-        if (!isBot && !isWhiteTurn) {
+        if (isBot && !isWhiteTurn) {
             promotionPiece = move.promotionPiece;
         } else {
             String[] options = { "Queen", "Rook", "Bishop", "Knight" };
@@ -346,24 +349,43 @@ public class Board extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
+        g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 5));
+
         boolean light = true;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
-                g.setColor(light ? new Color(240, 217, 181) : new Color(181, 136, 99));
-                g.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                Color tileColor = light ? LIGHT_COLOR : DARK_COLOR;
+                Color textColor = light ? DARK_COLOR : LIGHT_COLOR;
+                g2d.setColor(tileColor);
+                g2d.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+
+                g2d.setColor(textColor);
+
+                if (x == 0) {
+                    String rank = String.valueOf(8 - y);
+                    g2d.drawString(rank, x * tileSize + 4, y * tileSize + g2d.getFontMetrics().getAscent());
+                }
+
+                if (y == 7) {
+                    char file = (char) ('a' + x);
+                    int textWidth = g2d.getFontMetrics().stringWidth(String.valueOf(file));
+                    g2d.drawString(String.valueOf(file),
+                            (x + 1) * tileSize - textWidth - 4,
+                            (y + 1) * tileSize - 4);
+                }
+
                 light = !light;
             }
             light = !light;
         }
+
         if (selectedPiece != null) {
-            // Draws valid moves
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
                     if (isvalidMove(new Move(this, selectedPiece, c, r))) {
-                        g2d.setColor(new Color(50, 150, 255, 150));
+                        g2d.setColor(VALID_COLOR);
                         int circleSize = tileSize / 3;
                         int offset = (tileSize - circleSize) / 2;
-
                         g2d.fillOval(c * tileSize + offset, r * tileSize + offset, circleSize, circleSize);
                     }
                 }
@@ -374,4 +396,5 @@ public class Board extends JPanel {
             piece.paint(g2d);
         }
     }
+
 }

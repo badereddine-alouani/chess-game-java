@@ -46,23 +46,36 @@ public class Bot {
     }
 
     public void setDifficulty(String level) throws IOException {
-        sendCommand("setoption name UCI_LimitStrength value true");
+        // Disable Elo limitation (we'll use other constraints)
+        sendCommand("setoption name UCI_LimitStrength value false");
 
         switch (level.toLowerCase()) {
+            case "beginner":
+                sendCommand("setoption name Skill Level value 0");
+                sendCommand("setoption name UCI_MaxDepth value 2");
+                sendCommand("setoption name Hash value 16");
+                break;
             case "easy":
-                sendCommand("setoption name UCI_Elo value 1350");
+                sendCommand("setoption name Skill Level value 5");
+                sendCommand("setoption name UCI_MaxDepth value 3");
+                sendCommand("setoption name Hash value 64");
                 break;
             case "medium":
-                sendCommand("setoption name UCI_Elo value 1600");
+                sendCommand("setoption name Skill Level value 10");
+                sendCommand("setoption name UCI_MaxDepth value 6");
+                sendCommand("setoption name Hash value 128");
                 break;
             case "hard":
-                sendCommand("setoption name UCI_Elo value 1900");
+                sendCommand("setoption name Skill Level value 15");
+                sendCommand("setoption name UCI_MaxDepth value 10");
+                sendCommand("setoption name Hash value 512");
                 break;
             case "master":
-                sendCommand("setoption name UCI_Elo value 2500");
+                sendCommand("setoption name Skill Level value 20");
+                sendCommand("setoption name Hash value 2048");
+                sendCommand("setoption name Threads value 4");
                 break;
         }
-
     }
 
     public String getBestMoveFromStartpos(List<String> moves, int moveTimeMs) throws IOException {
