@@ -54,12 +54,36 @@ public class Move {
                     break;
             }
         }
+
         return move;
     }
 
     @Override
     public String toString() {
-        return String.format("%c%s%c%s", (char) oldCol + 97, 8 - oldRow, (char) newCol + 97, 8 - newRow);
+        StringBuilder moveStr = new StringBuilder();
+        moveStr.append((char) (oldCol + 97));
+        moveStr.append(8 - oldRow);
+        moveStr.append((char) (newCol + 97));
+        moveStr.append(8 - newRow);
+
+        if (promotionPiece != null) {
+            switch (promotionPiece.getClass().getSimpleName().toLowerCase()) {
+                case "queen":
+                    moveStr.append("q");
+                    break;
+                case "rook":
+                    moveStr.append("r");
+                    break;
+                case "bishop":
+                    moveStr.append("b");
+                    break;
+                case "knight":
+                    moveStr.append("n");
+                    break;
+            }
+        }
+
+        return moveStr.toString();
     }
 
 }

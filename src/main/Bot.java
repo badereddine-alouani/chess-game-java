@@ -17,8 +17,26 @@ public class Bot {
         engine = Runtime.getRuntime().exec(pathToEngine);
         reader = new BufferedReader(new InputStreamReader(engine.getInputStream()));
         writer = new BufferedWriter(new OutputStreamWriter(engine.getOutputStream()));
-        return sendCommand("uci");
 
+        sendCommand("uci");
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (line.startsWith("uciok")) {
+                break;
+            }
+        }
+
+        sendCommand("isready");
+        while ((line = reader.readLine()) != null) {
+            if (line.equals("readyok")) {
+                break;
+            }
+        }
+
+        sendCommand("ucinewgame");
+
+        return true;
     }
 
     public boolean sendCommand(String command) throws IOException {
@@ -44,6 +62,7 @@ public class Bot {
                 sendCommand("setoption name UCI_Elo value 2500");
                 break;
         }
+
     }
 
     public String getBestMoveFromStartpos(List<String> moves, int moveTimeMs) throws IOException {

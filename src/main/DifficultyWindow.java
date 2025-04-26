@@ -67,7 +67,7 @@ public class DifficultyWindow extends JFrame {
         startButton.addActionListener((ActionEvent e) -> {
             String selected = (String) difficultySelector.getSelectedItem();
             try {
-                bot.startEngine("stockfish\\stockfish-windows-x86-64.exe");
+                bot.startEngine("stockfish/stockfish-windows-x86-64");
                 bot.setDifficulty(selected.toLowerCase());
                 System.out.println("Difficulty set to: " + selected);
                 onDifficultyChosen.accept(selected.toLowerCase());

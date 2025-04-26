@@ -69,7 +69,8 @@ public class Board extends JPanel {
 
         if (isBot && isWhiteTurn) {
             try {
-                bestMove = Move.toMove(this, bot.getBestMoveFromStartpos(playedMoves, 100));
+                String moveStr = bot.getBestMoveFromStartpos(playedMoves, 100);
+                bestMove = Move.toMove(this, moveStr);
                 isWhiteTurn = !isWhiteTurn;
                 makeMove(bestMove);
             } catch (Exception e) {
@@ -131,7 +132,9 @@ public class Board extends JPanel {
 
     private void promotePawn(Move move) {
         Piece promotionPiece = null;
-        if (!isBot) {
+        if (!isBot && !isWhiteTurn) {
+            promotionPiece = move.promotionPiece;
+        } else {
             String[] options = { "Queen", "Rook", "Bishop", "Knight" };
             String option = (String) JOptionPane.showInputDialog(
                     null,
@@ -160,8 +163,7 @@ public class Board extends JPanel {
                     promotionPiece = new Queen(this, move.newCol, move.newRow, move.piece.isWhite);
                     break;
             }
-        } else if (!isWhiteTurn) {
-            promotionPiece = move.promotionPiece;
+            move.promotionPiece = promotionPiece;
         }
 
         pieces.add(promotionPiece);
@@ -323,6 +325,7 @@ public class Board extends JPanel {
         pieces.add(new Pawn(this, 5, 6, true));
         pieces.add(new Pawn(this, 6, 6, true));
         pieces.add(new Pawn(this, 7, 6, true));
+
     }
 
     private void updateGameState() {
